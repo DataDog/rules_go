@@ -1,6 +1,6 @@
 module github.com/bazelbuild/rules_go/examples/basic-gazelle
 
-go 1.19
+go 1.26.2
 
 require (
 	github.com/spf13/cobra v1.5.0
