@@ -6,20 +6,20 @@ load("@bazel_tools//tools/build_defs/repo:http.bzl", "http_archive")
 # checks the sha.
 http_archive(
     name = "io_bazel_rules_go",
-    integrity = "sha256-fHbWI2so/2laoozzX5XeMXqUcv0fsUrHl8m/aE8Js3w=",
+    integrity = "sha256-nXL3uJBBKK+5jUa774KtciPsn/NxjUGa+zVf3dn5SEo=",
     urls = [
-        "https://mirror.bazel.build/github.com/bazelbuild/rules_go/releases/download/v0.44.2/rules_go-v0.44.2.zip",
-        "https://github.com/bazelbuild/rules_go/releases/download/v0.44.2/rules_go-v0.44.2.zip",
+        "https://mirror.bazel.build/github.com/bazelbuild/rules_go/releases/download/v0.55.1/rules_go-v0.55.1.zip",
+        "https://github.com/bazelbuild/rules_go/releases/download/v0.55.1/rules_go-v0.55.1.zip",
     ],
 )
 
 # Download the bazel_gazelle ruleset.
 http_archive(
     name = "bazel_gazelle",
-    integrity = "sha256-MpOL2hbmcABjA1R5Bj2dJMYO2o15/Uc5Vj9Q0zHLMgk=",
+    integrity = "sha256-SbFMaRzuyEH0RfhkLSgzbplFfR2xYgkv1QgjUeowLx0=",
     urls = [
-        "https://mirror.bazel.build/github.com/bazelbuild/bazel-gazelle/releases/download/v0.35.0/bazel-gazelle-v0.35.0.tar.gz",
-        "https://github.com/bazelbuild/bazel-gazelle/releases/download/v0.35.0/bazel-gazelle-v0.35.0.tar.gz",
+        "https://mirror.bazel.build/github.com/bazelbuild/bazel-gazelle/releases/download/v0.44.0/bazel-gazelle-v0.44.0.tar.gz",
+        "https://github.com/bazelbuild/bazel-gazelle/releases/download/v0.44.0/bazel-gazelle-v0.44.0.tar.gz",
     ],
 )
 
@@ -59,7 +59,7 @@ go_rules_dependencies()
 # The next rule installs the Go toolchains. The Go version is specified
 # using the version parameter. This rule will download the Go SDK.
 # https://github.com/bazelbuild/rules_go/blob/master/go/toolchains.rst#go_register_toolchains
-go_register_toolchains(version = "1.20.2")
+go_register_toolchains(version = "1.22.12")
 
 # The following call configured the gazelle dependencies, Go environment and Go SDK.
 gazelle_dependencies()

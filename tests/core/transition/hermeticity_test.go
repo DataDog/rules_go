@@ -122,12 +122,38 @@ message Foo {
 }
 `,
 		ModuleFileSuffix: `
-bazel_dep(name = "protobuf", version = "21.7", repo_name = "com_google_protobuf")
-bazel_dep(name = "rules_proto", version = "6.0.0")
-bazel_dep(name = "toolchains_protoc", version = "0.2.4")
+bazel_dep(name = "protobuf", version = "29.3", repo_name = "com_google_protobuf")
+bazel_dep(name = "rules_proto", version = "7.1.0")
+bazel_dep(name = "toolchains_protoc", version = "0.3.7")
 `,
 		WorkspacePrefix: `
 load("@bazel_tools//tools/build_defs/repo:http.bzl", "http_archive")
+
+# Bazel 8's bazel_tools requires a newer rules_cc than the one it bundles for WORKSPACE builds.
+http_archive(
+    name = "rules_cc",
+    sha256 = "abc605dd850f813bb37004b77db20106a19311a96b2da1c92b789da529d28fe1",
+    strip_prefix = "rules_cc-0.0.17",
+    urls = ["https://github.com/bazelbuild/rules_cc/releases/download/0.0.17/rules_cc-0.0.17.tar.gz"],
+)
+
+# Bazel 8 injects loads from @rules_java into the WORKSPACE suffix.
+http_archive(
+    name = "rules_java",
+    sha256 = "6d8c6d5cd86fed031ee48424f238fa35f33abc9921fd97dd4ae1119a29fc807f",
+    urls = ["https://github.com/bazelbuild/rules_java/releases/download/8.6.3/rules_java-8.6.3.tar.gz"],
+)
+
+load("@rules_java//java:rules_java_deps.bzl", "compatibility_proxy_repo")
+
+compatibility_proxy_repo()
+
+# protobuf's bazel rules need a newer bazel_skylib than go_rules_dependencies() declares.
+http_archive(
+    name = "bazel_skylib",
+    sha256 = "bc283cdfcd526a52c3201279cda4bc298652efa898b10b4db0837dc51652756f",
+    urls = ["https://github.com/bazelbuild/bazel-skylib/releases/download/1.7.1/bazel-skylib-1.7.1.tar.gz"],
+)
 
 # The non-polyfill version of this is needed by rules_proto below.
 http_archive(
@@ -146,13 +172,17 @@ load("@bazel_tools//tools/build_defs/repo:http.bzl", "http_archive")
 
 http_archive(
     name = "com_google_protobuf",
-    sha256 = "75be42bd736f4df6d702a0e4e4d30de9ee40eac024c4b845d17ae4cc831fe4ae",
-    strip_prefix = "protobuf-21.7",
-    # latest available in BCR, as of 2022-09-30
-    urls = [
-        "https://github.com/protocolbuffers/protobuf/archive/v21.7.tar.gz",
-        "https://mirror.bazel.build/github.com/protocolbuffers/protobuf/archive/v21.7.tar.gz",
-    ],
+    sha256 = "008a11cc56f9b96679b4c285fd05f46d317d685be3ab524b2a310be0fbad987e",
+    strip_prefix = "protobuf-29.3",
+    urls = ["https://github.com/protocolbuffers/protobuf/releases/download/v29.3/protobuf-29.3.tar.gz"],
+)
+
+# protobuf_deps() would otherwise pull in a rules_python that is too old for Bazel 8.
+http_archive(
+    name = "rules_python",
+    sha256 = "690e0141724abb568267e003c7b6d9a54925df40c275a870a4d934161dc9dd53",
+    strip_prefix = "rules_python-0.40.0",
+    url = "https://github.com/bazelbuild/rules_python/releases/download/0.40.0/rules_python-0.40.0.tar.gz",
 )
 
 load("@com_google_protobuf//:protobuf_deps.bzl", "protobuf_deps")
@@ -161,9 +191,9 @@ protobuf_deps()
 
 http_archive(
     name = "rules_proto",
-    sha256 = "303e86e722a520f6f326a50b41cfc16b98fe6d1955ce46642a5b7a67c11c0f5d",
-    strip_prefix = "rules_proto-6.0.0",
-    url = "https://github.com/bazelbuild/rules_proto/releases/download/6.0.0/rules_proto-6.0.0.tar.gz",
+    sha256 = "14a225870ab4e91869652cfd69ef2028277fc1dc4910d65d353b62d6e0ae21f4",
+    strip_prefix = "rules_proto-7.1.0",
+    url = "https://github.com/bazelbuild/rules_proto/releases/download/7.1.0/rules_proto-7.1.0.tar.gz",
 )
 
 load("@rules_proto//proto:repositories.bzl", "rules_proto_dependencies")
