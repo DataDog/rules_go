@@ -327,6 +327,14 @@ func setupWorkspace(args Args, files []string) (dir string, cleanup func() error
 	if outputUserRoot != "" {
 		fmt.Fprintf(bazelrcBuf, "startup --output_user_root=%s\n", outputUserRoot)
 	}
+	// Bazel 8 disables WORKSPACE by default and enables Bzlmod. The test workspaces
+	// are WORKSPACE-based unless they request a MODULE.bazel file.
+	fmt.Fprintf(bazelrcBuf, "common --enable_workspace\n")
+	if args.ModuleFileSuffix == "" {
+		fmt.Fprintf(bazelrcBuf, "common --noenable_bzlmod\n")
+	}
+	// Preserve Bazel 7 behavior for optional file globs under Bazel 8.
+	fmt.Fprintf(bazelrcBuf, "common --incompatible_disallow_empty_glob=false\n")
 	if flags := os.Getenv("GO_BAZEL_TEST_BAZELFLAGS"); flags != "" {
 		fmt.Fprintf(bazelrcBuf, "build %s\n", flags)
 	}

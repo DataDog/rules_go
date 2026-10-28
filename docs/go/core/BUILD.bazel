@@ -18,5 +18,7 @@ bzl_library(
         "//go/private/rules:source",
         "//go/private/rules:test",
         "//go/private/tools:path",
+        # Needed by @bazel_tools//tools/cpp:toolchain_utils.bzl under Bazel 8.
+        "@rules_cc//cc:find_cc_toolchain_bzl",
     ],
 )

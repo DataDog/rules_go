@@ -3,9 +3,7 @@ def _generate_script_impl(ctx):
     ctx.actions.write(output = script_file, is_executable = True, content = """
 {0}
 """.format(ctx.file.binary.short_path))
-    return struct(
-        files = depset([script_file]),
-    )
+    return [DefaultInfo(files = depset([script_file]))]
 
 generate_script = rule(
     _generate_script_impl,

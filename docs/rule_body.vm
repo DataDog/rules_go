@@ -9,7 +9,10 @@ TODO: Once https://github.com/bazelbuild/bazel/pull/14230 is merged, remove this
 *#
 #macro( markdownCellFormatNoEscapeHtml $docString )#*
   *##if ($docString.contains("<ul>"))#*
-      *#${docString.trim().replaceAll("\n(\\s*\n)+", "<br><br>").replaceAll("\n", " ")}#*
+      *#${docString.trim().replaceAll("
+( *
+)+", "<br><br>").replaceAll("
+", " ")}#*
   *##else#*
       *#${util.markdownCellFormat($docString)}#*
   *##end#*
